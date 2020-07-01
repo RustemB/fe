@@ -34,10 +34,6 @@ fn main() -> Result<(), String> {
         Ok(val) => parsed_data = val,
         Err(e) => return Err(format!("Something went wrong! {}", e)),
     }
-    // .unwrap_or_else(|x| {
-    //     println!("Something went wrong! {}", x);
-    //     process::exit(1);
-    // });
 
     //let query_of_data = cli.value_of("query").unwrap_or_else(|| {
     //    println!("Something went wrong: plz spcfy qry");
@@ -57,11 +53,6 @@ fn main() -> Result<(), String> {
     .unwrap();
 
     let output_data = method_to_print(&parsed_data).unwrap();
-    // let output_data:
-    // unwrap_or_else(|x| {
-    //     println!("Something went wrong: {}", x);
-    //     process::exit(1);
-    // });
 
     match cli.value_of("output") {
         Some(n) => {
