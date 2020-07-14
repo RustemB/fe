@@ -2,13 +2,13 @@ use clap::{App, Arg};
 use serde_json;
 use std::{
     fs::File,
-    io::{self, Read, BufReader},
+    io::{self, BufReader, Read},
     process,
 };
 
 fn main() {
     let cli = App::new("fe")
-        .version("0.1.0")
+        .version("0.1.1")
         .author("RustemB <bakirov.com@yandex.ru>")
         .about("JSON (other in next versions) manipulator.")
         .arg(
@@ -19,6 +19,13 @@ fn main() {
                 .value_name("FILE")
                 .help("Input file to manipulate."),
         )
+        .arg(
+            Arg::with_name("uglify")
+                .short("u")
+                .long("uglify")
+                .takes_value(false)
+                .help("Uglify data."),
+        )
         .get_matches();
     let mut user_input = String::new();
     match cli.value_of("input") {
@@ -27,11 +34,9 @@ fn main() {
             match file {
                 Ok(fi) => {
                     let mut reader = BufReader::new(fi);
-                    match reader.read_to_string(&mut user_input) {
-                        Ok(_) => {}
-                        Err(x) => {
-                            println!("Problem with reading file `{}': {}", f, x)
-                        }
+                    if let Err(x) = reader.read_to_string(&mut user_input) {
+                        println!("Problem with reading file `{}': {}", f, x);
+                        process::exit(1);
                     }
                 }
                 Err(_) => {
@@ -42,8 +47,8 @@ fn main() {
         }
         None => match io::stdin().read_to_string(&mut user_input) {
             Ok(_) => {}
-            Err(_) => {
-                println!("Something went wrong! Try again...");
+            Err(x) => {
+                println!("Something went wrong! {}", x);
                 process::exit(1);
             }
         },
@@ -55,12 +60,22 @@ fn main() {
             process::exit(1);
         }
     };
-    let fmt = match serde_json::to_string_pretty(&v) {
-        Ok(n) => n,
-        Err(x) => {
-            println!("Something went wrong: {}", x);
-            process::exit(1);
+    let output_data = if cli.is_present("uglify") {
+        match serde_json::to_string(&v) {
+            Ok(n) => n,
+            Err(x) => {
+                println!("Something went wrong: {}", x);
+                process::exit(1);
+            }
+        }
+    } else {
+        match serde_json::to_string_pretty(&v) {
+            Ok(n) => n,
+            Err(x) => {
+                println!("Something went wrong: {}", x);
+                process::exit(1);
+            }
         }
     };
-    println!("{}", fmt);
+    println!("{}", output_data);
 }
