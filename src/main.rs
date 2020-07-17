@@ -1,5 +1,4 @@
 use clap::{crate_version, App, Arg};
-use serde_json;
 use std::{
     fs::{self, File},
     io::{self, BufReader, Read},
@@ -87,5 +86,17 @@ fn gen_cli() -> clap::ArgMatches<'static> {
                 .takes_value(false)
                 .help("Uglify data"),
         )
+        .arg(
+            Arg::with_name("read_format")
+                .short("f")
+                .long("format")
+                .takes_value(true)
+                .value_name("FORMAT")
+                .default_value("json")
+                .case_insensitive(true)
+                .possible_values(&["json"])
+                .help("Input data format"),
+        )
+        //.arg(Arg::with_name("query").last(true).default_value("."))
         .get_matches()
 }
