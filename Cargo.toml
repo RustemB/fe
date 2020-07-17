@@ -6,5 +6,6 @@ edition = "2018"
 readme = "README.md"
 
 [dependencies]
+serde = "1.0.114"
 serde_json = "1.0.56"
 clap = "2.33.1"

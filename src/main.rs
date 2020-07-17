@@ -4,6 +4,7 @@ use std::{
     io::{self, BufReader, Read},
     process,
 };
+mod formats;
 
 fn main() {
     let cli = gen_cli();
@@ -36,11 +37,22 @@ fn main() {
         process::exit(1);
     });
 
-    let method_to_print = if cli.is_present("uglify") {
-        serde_json::to_string
-    } else {
-        serde_json::to_string_pretty
-    };
+    //let query_of_data = cli.value_of("query").unwrap_or_else(|| {
+    //    println!("Something went wrong: plz spcfy qry");
+    //    process::exit(1);
+    //});
+
+    //parsed_data = parsed_data.pointer(query_of_data).unwrap_or_else(|| {
+    //    println!("Something went wrong: no query");
+    //    process::exit(1);
+    //});
+
+    let data_format = cli.value_of("read_format").unwrap();
+    let method_to_print = printing_function(
+        data_format_to_enum(data_format).unwrap_or(formats::DataFormats::Json),
+        cli.is_present("uglify"),
+    )
+    .unwrap();
 
     let output_data = method_to_print(&parsed_data).unwrap_or_else(|x| {
         println!("Something went wrong: {}", x);
@@ -55,6 +67,30 @@ fn main() {
             }
         }
         None => println!("{}", output_data),
+    }
+}
+
+fn data_format_to_enum(format: &str) -> Result<formats::DataFormats, ()> {
+    match format {
+        "json" => Ok(formats::DataFormats::Json),
+        _ => Err(()),
+    }
+}
+
+fn printing_function<T>(
+    data_type: formats::DataFormats,
+    is_ugly: bool,
+) -> Option<fn(&T) -> serde_json::Result<String>>
+where
+    T: serde::ser::Serialize,
+{
+    match data_type {
+        formats::DataFormats::Json => Some(if is_ugly {
+            serde_json::to_string
+        } else {
+            serde_json::to_string_pretty
+        }),
+        //_ => None,
     }
 }
 
@@ -97,6 +133,6 @@ fn gen_cli() -> clap::ArgMatches<'static> {
                 .possible_values(&["json"])
                 .help("Input data format"),
         )
-        //.arg(Arg::with_name("query").last(true).default_value("."))
+        //.arg(Arg::with_name("query").last(true).default_value("/"))
         .get_matches()
 }

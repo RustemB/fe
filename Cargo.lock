@@ -46,6 +46,7 @@ name = "fe"
 version = "0.1.2"
 dependencies = [
  "clap",
+ "serde",
  "serde_json",
 ]
 
