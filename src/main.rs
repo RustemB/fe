@@ -49,7 +49,7 @@ fn main() {
 
     let data_format = cli.value_of("read_format").unwrap();
     let method_to_print = printing_function(
-        data_format_to_enum(data_format).unwrap_or(formats::DataFormats::Json),
+        data_format_to_enum(data_format).unwrap_or(formats::formats::DataFormats::Json),
         cli.is_present("uglify"),
     )
     .unwrap();
@@ -70,22 +70,22 @@ fn main() {
     }
 }
 
-fn data_format_to_enum(format: &str) -> Result<formats::DataFormats, ()> {
+fn data_format_to_enum(format: &str) -> Result<formats::formats::DataFormats, ()> {
     match format {
-        "json" => Ok(formats::DataFormats::Json),
+        "json" => Ok(formats::formats::DataFormats::Json),
         _ => Err(()),
     }
 }
 
 fn printing_function<T>(
-    data_type: formats::DataFormats,
+    data_type: formats::formats::DataFormats,
     is_ugly: bool,
 ) -> Option<fn(&T) -> serde_json::Result<String>>
 where
     T: serde::ser::Serialize,
 {
     match data_type {
-        formats::DataFormats::Json => Some(if is_ugly {
+        formats::formats::DataFormats::Json => Some(if is_ugly {
             serde_json::to_string
         } else {
             serde_json::to_string_pretty
