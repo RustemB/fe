@@ -5,4 +5,5 @@ pub enum DataFormats {
     //Yaml,
     // https://github.com/3Hren/msgpack-rust
     //MsgPack,
+    //CSV
 }
