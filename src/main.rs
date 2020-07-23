@@ -4,7 +4,7 @@ use std::{
     io::{self, BufReader, Read},
     process,
 };
-mod formats;
+mod data_types;
 
 fn main() {
     let cli = gen_cli();
@@ -49,7 +49,7 @@ fn main() {
 
     let data_format = cli.value_of("read_format").unwrap();
     let method_to_print = printing_function(
-        data_format_to_enum(data_format).unwrap_or(formats::formats::DataFormats::Json),
+        data_format_to_enum(data_format).unwrap_or(data_types::formats::DataFormats::Json),
         cli.is_present("uglify"),
     )
     .unwrap();
@@ -70,22 +70,22 @@ fn main() {
     }
 }
 
-fn data_format_to_enum(format: &str) -> Result<formats::formats::DataFormats, ()> {
+fn data_format_to_enum(format: &str) -> Result<data_types::formats::DataFormats, ()> {
     match format {
-        "json" => Ok(formats::formats::DataFormats::Json),
+        "json" => Ok(data_types::formats::DataFormats::Json),
         _ => Err(()),
     }
 }
 
 fn printing_function<T>(
-    data_type: formats::formats::DataFormats,
+    data_type: data_types::formats::DataFormats,
     is_ugly: bool,
 ) -> Option<fn(&T) -> serde_json::Result<String>>
 where
     T: serde::ser::Serialize,
 {
     match data_type {
-        formats::formats::DataFormats::Json => Some(if is_ugly {
+        data_types::formats::DataFormats::Json => Some(if is_ugly {
             serde_json::to_string
         } else {
             serde_json::to_string_pretty
