@@ -1,3 +1,4 @@
+/// Data formats that available in `fe`, but should be replaced with some modularity
 pub enum DataFormats {
     // https://github.com/serde-rs/json
     Json,
