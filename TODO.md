@@ -4,3 +4,4 @@
 - Convertation
 - data to QR-code
 - remove `process::exit`s
+- WebAssembly parser
