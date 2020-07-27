@@ -8,4 +8,5 @@ pub enum DataFormats {
     //MsgPack,
     //CSV,
     //TSV
+    //WASM
 }
