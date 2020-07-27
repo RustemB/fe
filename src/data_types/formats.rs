@@ -10,4 +10,5 @@ pub enum DataFormats {
     //Tsv
     //Wasm
     //Cson
+    //Ron
 }
