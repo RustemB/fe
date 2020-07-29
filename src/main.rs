@@ -2,11 +2,10 @@ use clap::{crate_version, App, Arg};
 use std::{
     fs::{self, File},
     io::{self, BufReader, Read},
-    process,
 };
 mod data_types;
 
-fn main() {
+fn main() -> Result<(), String> {
     let cli = gen_cli();
 
     let mut user_input = String::new();
@@ -15,27 +14,30 @@ fn main() {
             Ok(fi) => {
                 let mut reader = BufReader::new(fi);
                 if let Err(x) = reader.read_to_string(&mut user_input) {
-                    println!("Problem with reading file `{}': {}", f, x);
-                    process::exit(1);
+                    return Err(format!("Problem with reading file `{}': {}", f, x));
                 }
             }
             _ => {
-                println!("File `{}' not exist.", f);
-                process::exit(1);
+                return Err(format!("File `{}' not exist.", f));
             }
         },
         None => {
             if let Err(x) = io::stdin().read_to_string(&mut user_input) {
-                println!("Something went wrong! {}", x);
-                process::exit(1);
+                return Err(format!("Something went wrong! {}", x));
             }
         }
     }
 
-    let parsed_data: serde_json::Value = serde_json::from_str(&user_input).unwrap_or_else(|x| {
-        println!("Something went wrong! {}", x);
-        process::exit(1);
-    });
+    let parsed_data_res = serde_json::from_str(&user_input);
+    let parsed_data: serde_json::Value;
+    match parsed_data_res {
+        Ok(val) => parsed_data = val,
+        Err(e) => return Err(format!("Something went wrong! {}", e)),
+    }
+    // .unwrap_or_else(|x| {
+    //     println!("Something went wrong! {}", x);
+    //     process::exit(1);
+    // });
 
     //let query_of_data = cli.value_of("query").unwrap_or_else(|| {
     //    println!("Something went wrong: plz spcfy qry");
@@ -54,20 +56,23 @@ fn main() {
     )
     .unwrap();
 
-    let output_data = method_to_print(&parsed_data).unwrap_or_else(|x| {
-        println!("Something went wrong: {}", x);
-        process::exit(1);
-    });
+    let output_data = method_to_print(&parsed_data).unwrap();
+    // let output_data:
+    // unwrap_or_else(|x| {
+    //     println!("Something went wrong: {}", x);
+    //     process::exit(1);
+    // });
 
     match cli.value_of("output") {
         Some(n) => {
             if let Err(x) = fs::write(n, output_data) {
-                println!("Something went wrong: {}", x);
-                process::exit(1);
+                return Err(format!("Something went wrong: {}", x));
             }
         }
         None => println!("{}", output_data),
     }
+
+    Ok(())
 }
 
 fn data_format_to_enum(format: &str) -> Result<data_types::formats::DataFormats, ()> {
