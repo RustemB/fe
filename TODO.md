@@ -6,3 +6,4 @@
 - [x] remove `process::exit`s
 - [ ] WebAssembly parser
 - [ ] think about WASM based plugin system
+- [ ] TUI for interactive spectating (like in fx)
