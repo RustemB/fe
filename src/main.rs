@@ -45,23 +45,15 @@ fn main() -> Result<(), String> {
     //    process::exit(1);
     //});
 
-    let data_format = cli.value_of("read_format").unwrap();
-    let method_to_print = printing_function(
-        data_format_to_enum(data_format).unwrap_or(data_types::formats::DataFormats::Json),
+    let data_format = data_format_to_enum(cli.value_of("read_format").unwrap())
+        .unwrap_or(data_types::formats::DataFormats::Json);
+
+    print_data(
+        &parsed_data,
+        data_format,
         cli.is_present("uglify"),
-    )
-    .unwrap();
-
-    let output_data = method_to_print(&parsed_data).unwrap();
-
-    match cli.value_of("output") {
-        Some(n) => {
-            if let Err(x) = fs::write(n, output_data) {
-                return Err(format!("Something went wrong: {}", x));
-            }
-        }
-        None => println!("{}", output_data),
-    }
+        cli.value_of("output"),
+    );
 
     Ok(())
 }
@@ -73,20 +65,24 @@ fn data_format_to_enum(format: &str) -> Result<data_types::formats::DataFormats,
     }
 }
 
-fn printing_function<T>(
+fn print_data(
+    data_src: &serde_json::Value,
     data_type: data_types::formats::DataFormats,
     is_ugly: bool,
-) -> Option<fn(&T) -> serde_json::Result<String>>
-where
-    T: serde::ser::Serialize,
-{
-    match data_type {
-        data_types::formats::DataFormats::Json => Some(if is_ugly {
-            serde_json::to_string
-        } else {
-            serde_json::to_string_pretty
-        }),
-        //_ => None,
+    to_file: Option<&str>,
+) {
+    let string = match data_type {
+        data_types::formats::DataFormats::Json => {
+            if is_ugly {
+                serde_json::to_string(data_src).unwrap()
+            } else {
+                serde_json::to_string_pretty(data_src).unwrap()
+            }
+        } //_ => None,
+    };
+    match to_file {
+        Some(file) => fs::write(file, string).expect("Problems with writing to file!"),
+        None => println!("{}", string),
     }
 }
 
