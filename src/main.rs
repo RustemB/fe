@@ -64,6 +64,15 @@ fn data_format_to_enum(
             }
             Ok(data_types::formats::DataFormats::Json(parsed_data))
         }
+        "yaml" => {
+            let parsed_data_res = serde_yaml::from_str(&data_src);
+            let parsed_data: serde_yaml::Value;
+            match parsed_data_res {
+                Ok(val) => parsed_data = val,
+                Err(e) => return Err(format!("Something went wrong! {}", e)),
+            }
+            Ok(data_types::formats::DataFormats::Yaml(parsed_data))
+        }
         _ => Err("Unreachable zone!".to_owned()),
     }
 }
@@ -76,7 +85,10 @@ fn print_data(data_type: data_types::formats::DataFormats, is_ugly: bool, to_fil
             } else {
                 serde_json::to_string_pretty(&data_src).unwrap()
             }
-        } //_ => None,
+        }
+        data_types::formats::DataFormats::Yaml(data_src) => {
+            serde_yaml::to_string(&data_src).unwrap()
+        }
     };
     match to_file {
         Some(file) => fs::write(file, string).expect("Problems with writing to file!"),
@@ -120,7 +132,7 @@ fn gen_cli() -> clap::ArgMatches<'static> {
                 .value_name("FORMAT")
                 .default_value("json")
                 .case_insensitive(true)
-                .possible_values(&["json"])
+                .possible_values(&["json", "yaml"])
                 .help("Input data format"),
         )
         //.arg(Arg::with_name("query").last(true).default_value("/"))

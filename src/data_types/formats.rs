@@ -1,16 +1,12 @@
-use serde_json;
-
 /// Data formats that available in `fe`, but should be replaced with some modularity
 pub enum DataFormats {
-    // https://github.com/serde-rs/json
     Json(serde_json::Value),
-    // https://github.com/dtolnay/serde-yaml
-    //Yaml,
-    // https://github.com/3Hren/msgpack-rust
-    //MsgPack,
-    //Csv,
-    //Tsv
-    //Wasm
-    //Cson
-    //Ron
+    Yaml(serde_yaml::Value),
+    //Lexpr(Value),
+    //MsgPack(Value),
+    //Csv(Value),
+    //Tsv(Value),
+    //Wasm(Value),
+    //Cson(Value),
+    //Ron(Value),
 }
