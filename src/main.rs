@@ -28,13 +28,6 @@ fn main() -> Result<(), String> {
         }
     }
 
-    let parsed_data_res = serde_json::from_str(&user_input);
-    let parsed_data: serde_json::Value;
-    match parsed_data_res {
-        Ok(val) => parsed_data = val,
-        Err(e) => return Err(format!("Something went wrong! {}", e)),
-    }
-
     //let query_of_data = cli.value_of("query").unwrap_or_else(|| {
     //    println!("Something went wrong: plz spcfy qry");
     //    process::exit(1);
@@ -45,11 +38,10 @@ fn main() -> Result<(), String> {
     //    process::exit(1);
     //});
 
-    let data_format = data_format_to_enum(cli.value_of("read_format").unwrap())
-        .unwrap_or(data_types::formats::DataFormats::Json);
+    let data_format =
+        data_format_to_enum(cli.value_of("read_format").unwrap(), user_input).unwrap();
 
     print_data(
-        &parsed_data,
         data_format,
         cli.is_present("uglify"),
         cli.value_of("output"),
@@ -58,25 +50,31 @@ fn main() -> Result<(), String> {
     Ok(())
 }
 
-fn data_format_to_enum(format: &str) -> Result<data_types::formats::DataFormats, ()> {
+fn data_format_to_enum(
+    format: &str,
+    data_src: String,
+) -> Result<data_types::formats::DataFormats, String> {
     match format {
-        "json" => Ok(data_types::formats::DataFormats::Json),
-        _ => Err(()),
+        "json" => {
+            let parsed_data_res = serde_json::from_str(&data_src);
+            let parsed_data: serde_json::Value;
+            match parsed_data_res {
+                Ok(val) => parsed_data = val,
+                Err(e) => return Err(format!("Something went wrong! {}", e)),
+            }
+            Ok(data_types::formats::DataFormats::Json(parsed_data))
+        }
+        _ => Err("Unreachable zone!".to_owned()),
     }
 }
 
-fn print_data(
-    data_src: &serde_json::Value,
-    data_type: data_types::formats::DataFormats,
-    is_ugly: bool,
-    to_file: Option<&str>,
-) {
+fn print_data(data_type: data_types::formats::DataFormats, is_ugly: bool, to_file: Option<&str>) {
     let string = match data_type {
-        data_types::formats::DataFormats::Json => {
+        data_types::formats::DataFormats::Json(data_src) => {
             if is_ugly {
-                serde_json::to_string(data_src).unwrap()
+                serde_json::to_string(&data_src).unwrap()
             } else {
-                serde_json::to_string_pretty(data_src).unwrap()
+                serde_json::to_string_pretty(&data_src).unwrap()
             }
         } //_ => None,
     };

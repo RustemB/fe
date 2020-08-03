@@ -1,7 +1,9 @@
+use serde_json;
+
 /// Data formats that available in `fe`, but should be replaced with some modularity
 pub enum DataFormats {
     // https://github.com/serde-rs/json
-    Json,
+    Json(serde_json::Value),
     // https://github.com/dtolnay/serde-yaml
     //Yaml,
     // https://github.com/3Hren/msgpack-rust
