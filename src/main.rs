@@ -82,6 +82,15 @@ fn data_format_to_enum(
             }
             Ok(data_types::formats::DataFormats::Ron(parsed_data))
         }
+        "toml" => {
+            let parsed_data_res = toml::from_str(&data_src);
+            let parsed_data: toml::Value;
+            match parsed_data_res {
+                Ok(val) => parsed_data = val,
+                Err(e) => return Err(format!("Something went wrong! {}", e)),
+            }
+            Ok(data_types::formats::DataFormats::Toml(parsed_data))
+        }
         _ => Err("Unreachable zone!".to_owned()),
     }
 }
@@ -103,6 +112,13 @@ fn print_data(data_type: data_types::formats::DataFormats, is_ugly: bool, to_fil
                 ron::to_string(&data_src).unwrap()
             } else {
                 ron::ser::to_string_pretty(&data_src, ron::ser::PrettyConfig::default()).unwrap()
+            }
+        }
+        data_types::formats::DataFormats::Toml(data_src) => {
+            if is_ugly {
+                toml::to_string(&data_src).unwrap()
+            } else {
+                toml::to_string_pretty(&data_src).unwrap()
             }
         }
     };
@@ -148,7 +164,7 @@ fn gen_cli() -> clap::ArgMatches<'static> {
                 .value_name("FORMAT")
                 .default_value("json")
                 .case_insensitive(true)
-                .possible_values(&["json", "yaml", "ron"])
+                .possible_values(&["json", "yaml", "ron", "toml"])
                 .help("Input data format"),
         )
         //.arg(Arg::with_name("query").last(true).default_value("/"))

@@ -4,6 +4,7 @@ pub enum DataFormats {
     Yaml(serde_yaml::Value),
     /// Prints strange json :thinking:
     Ron(ron::Value),
+    Toml(toml::Value),
     //Lexpr(Value),
     //MsgPack(Value),
     //Csv(Value),
