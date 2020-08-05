@@ -54,43 +54,23 @@ fn data_format_to_enum(
     format: &str,
     data_src: String,
 ) -> Result<data_types::formats::DataFormats, String> {
-    match format {
-        "json" => {
-            let parsed_data_res = serde_json::from_str(&data_src);
-            let parsed_data: serde_json::Value;
-            match parsed_data_res {
-                Ok(val) => parsed_data = val,
-                Err(e) => return Err(format!("Something went wrong! {}", e)),
-            }
-            Ok(data_types::formats::DataFormats::Json(parsed_data))
-        }
-        "yaml" => {
-            let parsed_data_res = serde_yaml::from_str(&data_src);
-            let parsed_data: serde_yaml::Value;
-            match parsed_data_res {
-                Ok(val) => parsed_data = val,
-                Err(e) => return Err(format!("Something went wrong! {}", e)),
-            }
-            Ok(data_types::formats::DataFormats::Yaml(parsed_data))
-        }
-        "ron" => {
-            let parsed_data_res = ron::from_str::<ron::Value>(&data_src);
-            let parsed_data: ron::Value;
-            match parsed_data_res {
-                Ok(val) => parsed_data = val,
-                Err(e) => return Err(format!("Something went wrong! {}", e)),
-            }
-            Ok(data_types::formats::DataFormats::Ron(parsed_data))
-        }
-        "toml" => {
-            let parsed_data_res = toml::from_str(&data_src);
-            let parsed_data: toml::Value;
-            match parsed_data_res {
-                Ok(val) => parsed_data = val,
-                Err(e) => return Err(format!("Something went wrong! {}", e)),
-            }
-            Ok(data_types::formats::DataFormats::Toml(parsed_data))
-        }
+    match format.to_lowercase().as_str() {
+        "json" => match serde_json::from_str(&data_src) {
+            Ok(val) => Ok(data_types::formats::DataFormats::Json(val)),
+            Err(e) => Err(format!("Something went wrong! {}", e)),
+        },
+        "yaml" => match serde_yaml::from_str(&data_src) {
+            Ok(val) => Ok(data_types::formats::DataFormats::Yaml(val)),
+            Err(e) => Err(format!("Something went wrong! {}", e)),
+        },
+        "ron" => match ron::from_str::<ron::Value>(&data_src) {
+            Ok(val) => Ok(data_types::formats::DataFormats::Ron(val)),
+            Err(e) => Err(format!("Something went wrong! {}", e)),
+        },
+        "toml" => match toml::from_str(&data_src) {
+            Ok(val) => Ok(data_types::formats::DataFormats::Toml(val)),
+            Err(e) => Err(format!("Something went wrong! {}", e)),
+        },
         _ => Err("Unreachable zone!".to_owned()),
     }
 }
