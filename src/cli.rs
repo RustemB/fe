@@ -4,7 +4,7 @@ pub fn gen_cli() -> ArgMatches<'static> {
     App::new("fe")
         .version(crate_version!())
         .author("RustemB <bakirov.com@yandex.ru>")
-        .about("JSON (other in next versions) manipulator")
+        .about("Data format manipulator")
         .arg(
             Arg::with_name("input")
                 .short("i")
