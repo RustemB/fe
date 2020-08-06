@@ -10,6 +10,7 @@ fn main() -> Result<(), String> {
     let fe_cli = cli::gen_cli();
 
     let mut user_input = String::new();
+    let mut extension: Option<&str> = None;
     match fe_cli.value_of("input") {
         Some(f) => match File::open(f) {
             Ok(fi) => {
@@ -17,6 +18,8 @@ fn main() -> Result<(), String> {
                 if let Err(x) = reader.read_to_string(&mut user_input) {
                     return Err(format!("Problem with reading file `{}': {}", f, x));
                 }
+                let ext: Vec<&str> = f.rsplit('.').collect();
+                extension = ext.first().map(|x| *x);
             }
             _ => {
                 return Err(format!("File `{}' not exist.", f));
@@ -29,18 +32,12 @@ fn main() -> Result<(), String> {
         }
     }
 
-    //let query_of_data = cli.value_of("query").unwrap_or_else(|| {
-    //    println!("Something went wrong: plz spcfy qry");
-    //    process::exit(1);
-    //});
-
-    //parsed_data = parsed_data.pointer(query_of_data).unwrap_or_else(|| {
-    //    println!("Something went wrong: no query");
-    //    process::exit(1);
-    //});
-
     print_data(
-        formats::data_format_to_enum(fe_cli.value_of("read_format").unwrap(), user_input).unwrap(),
+        formats::data_format_to_enum(
+            extension.unwrap_or(fe_cli.value_of("read_format").unwrap()),
+            user_input,
+        )
+        .unwrap(),
         fe_cli.is_present("uglify"),
         fe_cli.value_of("output"),
     );

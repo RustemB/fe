@@ -17,7 +17,7 @@ pub fn data_format_to_enum(format: &str, data_src: String) -> Result<DataFormats
             Ok(val) => Ok(DataFormats::Json(val)),
             Err(e) => Err(format!("Something went wrong! {}", e)),
         },
-        "yaml" => match serde_yaml::from_str(&data_src) {
+        "yaml" | "yml" => match serde_yaml::from_str(&data_src) {
             Ok(val) => Ok(DataFormats::Yaml(val)),
             Err(e) => Err(format!("Something went wrong! {}", e)),
         },
