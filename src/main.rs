@@ -75,7 +75,11 @@ fn data_format_to_enum(
     }
 }
 
-fn print_data(data_type: data_types::formats::DataFormats, is_ugly: bool, to_file: Option<&str>) {
+fn print_data(
+    data_type: data_types::formats::DataFormats,
+    is_ugly: bool,
+    file_to_write: Option<&str>,
+) {
     let string = match data_type {
         data_types::formats::DataFormats::Json(data_src) => {
             if is_ugly {
@@ -102,7 +106,7 @@ fn print_data(data_type: data_types::formats::DataFormats, is_ugly: bool, to_fil
             }
         }
     };
-    match to_file {
+    match file_to_write {
         Some(file) => fs::write(file, string).expect("Problems with writing to file!"),
         None => println!("{}", string),
     }
