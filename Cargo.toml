@@ -1,6 +1,6 @@
 [package]
 name = "fe"
-version = "0.1.8"
+version = "0.1.9"
 authors = ["RustemB <bakirov.com@yandex.ru>"]
 edition = "2018"
 readme = "README.md"

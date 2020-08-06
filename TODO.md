@@ -8,3 +8,4 @@
 - [ ] WebAssembly info
 - [ ] think about WASM based plugin system
 - [ ] TUI for interactive spectating (like in fx)
+- [ ] Make more refactoring (`unreachable!()`)
