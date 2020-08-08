@@ -1,6 +1,7 @@
 mod cli;
 mod data_types;
 use data_types::formats;
+use std::path;
 use std::{
     fs::{self, File},
     io::{self, BufReader, Read},
@@ -18,8 +19,7 @@ fn main() -> Result<(), String> {
                 if let Err(x) = reader.read_to_string(&mut user_input) {
                     return Err(format!("Problem with reading file `{}': {}", f, x));
                 }
-                let ext: Vec<&str> = f.rsplit('.').collect();
-                extension = ext.first().map(|x| *x);
+                extension = path::Path::new(f).extension().map(|x| x.to_str().unwrap_or(""));
             }
             _ => {
                 return Err(format!("File `{}' not exist.", f));
