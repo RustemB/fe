@@ -27,7 +27,7 @@ fn main() -> Result<(), String> {
         },
         None => {
             if let Err(x) = io::stdin().read_to_string(&mut user_input) {
-                return Err(format!("Something went wrong! {}", x));
+                return Err(format!("Something went wrong: {}", x));
             }
         }
     }
@@ -71,7 +71,7 @@ fn print_data(data_type: formats::DataFormats, is_ugly: bool, file_to_write: Opt
         }
     };
     match file_to_write {
-        Some(file) => fs::write(file, string).expect("Problems with writing to file!"),
+        Some(file) => fs::write(file, string).expect("Problems with writing to file."),
         None => println!("{}", string),
     }
 }
