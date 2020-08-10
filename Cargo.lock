@@ -55,7 +55,7 @@ checksum = "134951f4028bdadb9b84baf4232681efbf277da25144b9b0ad65df75946c422b"
 
 [[package]]
 name = "fe"
-version = "0.1.10"
+version = "0.1.11"
 dependencies = [
  "clap",
  "ron",
