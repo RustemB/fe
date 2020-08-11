@@ -39,6 +39,17 @@ pub fn gen_cli() -> ArgMatches<'static> {
                 .possible_values(&["json", "yaml", "ron", "toml"])
                 .help("Input data format"),
         )
+        .arg(
+            Arg::with_name("color")
+                .long("color")
+                .takes_value(true)
+                .value_name("WHEN")
+                .help("Coloring (not functional atm...)")
+                .case_insensitive(true)
+                .default_value("auto")
+                .hide_default_value(true)
+                .possible_values(&["auto", "always", "never"]),
+        )
         //.arg(Arg::with_name("query").last(true).default_value("/"))
         .get_matches()
 }
