@@ -34,32 +34,41 @@ pub fn data_format_to_enum(format: &str, data_src: String) -> Result<DataFormats
 }
 
 pub fn print_data(data_type: DataFormats, is_ugly: bool, file_to_write: Option<&str>) {
-    let string = match data_type {
-        DataFormats::Json(data_src) => {
+    let (string, tp) = match data_type {
+        DataFormats::Json(data_src) => (
             if is_ugly {
                 serde_json::to_string(&data_src).unwrap()
             } else {
                 serde_json::to_string_pretty(&data_src).unwrap()
-            }
-        }
-        DataFormats::Yaml(data_src) => serde_yaml::to_string(&data_src).unwrap(),
-        DataFormats::Ron(data_src) => {
+            },
+            "json",
+        ),
+        DataFormats::Yaml(data_src) => (serde_yaml::to_string(&data_src).unwrap(), "yaml"),
+        DataFormats::Ron(data_src) => (
             if is_ugly {
                 ron::to_string(&data_src).unwrap()
             } else {
                 ron::ser::to_string_pretty(&data_src, ron::ser::PrettyConfig::default()).unwrap()
-            }
-        }
-        DataFormats::Toml(data_src) => {
+            },
+            "ron",
+        ),
+        DataFormats::Toml(data_src) => (
             if is_ugly {
                 toml::to_string(&data_src).unwrap()
             } else {
                 toml::to_string_pretty(&data_src).unwrap()
-            }
-        }
+            },
+            "toml",
+        ),
     };
     match file_to_write {
         Some(file) => std::fs::write(file, string).expect("Problems with writing to file."),
-        None => println!("{}", string),
+        None => {
+            bat::PrettyPrinter::new()
+                .input_from_bytes(string.as_bytes())
+                .language(tp)
+                .print()
+                .unwrap();
+        }
     }
 }
