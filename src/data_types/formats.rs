@@ -33,7 +33,12 @@ pub fn data_format_to_enum(format: &str, data_src: String) -> Result<DataFormats
     }
 }
 
-pub fn print_data(data_type: DataFormats, is_ugly: bool, file_to_write: Option<&str>) {
+pub fn print_data(
+    data_type: DataFormats,
+    is_ugly: bool,
+    file_to_write: Option<&str>,
+    is_color: bool,
+) {
     let (string, tp) = match data_type {
         DataFormats::Json(data_src) => (
             if is_ugly {
@@ -66,6 +71,7 @@ pub fn print_data(data_type: DataFormats, is_ugly: bool, file_to_write: Option<&
         None => {
             bat::PrettyPrinter::new()
                 .input_from_bytes(string.as_bytes())
+                .colored_output(is_color)
                 .language(tp)
                 .print()
                 .unwrap();

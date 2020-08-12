@@ -34,6 +34,13 @@ fn main() -> Result<(), String> {
         }
     }
 
+    let is_color = match fe_cli.value_of("color") {
+        Some("always") => true,
+        Some("never") => false,
+        Some("auto") => option_env!("NO_COLOR").is_none(),
+        _ => return Err("Unreachable zone!".to_owned()),
+    };
+
     formats::print_data(
         formats::data_format_to_enum(
             extension.unwrap_or_else(|| fe_cli.value_of("read_format").unwrap()),
@@ -42,6 +49,7 @@ fn main() -> Result<(), String> {
         .unwrap(),
         fe_cli.is_present("uglify"),
         fe_cli.value_of("output"),
+        is_color,
     );
 
     Ok(())
