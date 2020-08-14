@@ -45,7 +45,6 @@ pub fn gen_cli() -> ArgMatches<'static> {
                 .takes_value(true)
                 .value_name("WHEN")
                 .help("Coloring")
-                .case_insensitive(true)
                 .default_value("auto")
                 .hide_default_value(true)
                 .possible_values(&["auto", "always", "never"]),

@@ -3,12 +3,6 @@ pub enum DataFormats {
     Yaml(serde_yaml::Value),
     Ron(ron::Value),
     Toml(toml::Value),
-    //Lexpr(Value),
-    //MsgPack(Value),
-    //Csv(Value),
-    //Tsv(Value),
-    //Wasm(Value),
-    //Cson(Value),
 }
 
 pub fn data_format_to_enum(format: &str, data_src: String) -> Result<DataFormats, String> {
@@ -37,7 +31,7 @@ pub fn print_data(
     data_type: DataFormats,
     is_ugly: bool,
     file_to_write: Option<&str>,
-    is_color: bool,
+    is_colored: bool,
 ) {
     let (string, tp) = match data_type {
         DataFormats::Json(data_src) => (
@@ -66,12 +60,13 @@ pub fn print_data(
             "toml",
         ),
     };
+
     match file_to_write {
         Some(file) => std::fs::write(file, string).expect("Problems with writing to file."),
         None => {
             bat::PrettyPrinter::new()
                 .input_from_bytes(string.as_bytes())
-                .colored_output(is_color)
+                .colored_output(is_colored)
                 .language(tp)
                 .print()
                 .unwrap();
