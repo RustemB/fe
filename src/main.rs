@@ -1,4 +1,5 @@
 mod cli;
+mod config;
 mod data_types;
 use data_types::formats;
 use std::path;
@@ -9,6 +10,8 @@ use std::{
 
 fn main() -> Result<(), String> {
     let fe_cli = cli::gen_cli();
+    
+    let fe_config = config::get_config();
 
     let mut user_input = String::new();
     let mut extension: Option<&str> = None;
