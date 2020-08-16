@@ -1,41 +1,41 @@
 use serde::Deserialize;
 use std::fs::File;
-use std::io::Read;
 use std::io::BufReader;
+use std::io::Read;
 
 // First-ly look at global config, then on individual
 #[derive(Deserialize)]
 pub struct Config {
-    global: Option<Global>,
-    json: Option<Json>,
-    yaml: Option<Yaml>,
-    toml: Option<Toml>,
-    ron: Option<Ron>,
+    pub global: Option<Global>,
+    pub json: Option<Json>,
+    pub yaml: Option<Yaml>,
+    pub toml: Option<Toml>,
+    pub ron: Option<Ron>,
 }
 
 #[derive(Deserialize)]
 pub struct Global {
-    uglify: Option<bool>,
+    pub uglify: Option<bool>,
 }
 
 #[derive(Deserialize)]
 pub struct Json {
-    uglify: Option<bool>,
+    pub uglify: Option<bool>,
 }
 
 #[derive(Deserialize)]
 pub struct Yaml {
-    uglify: Option<bool>,
+    pub uglify: Option<bool>,
 }
 
 #[derive(Deserialize)]
 pub struct Toml {
-    uglify: Option<bool>,
+    pub uglify: Option<bool>,
 }
 
 #[derive(Deserialize)]
 pub struct Ron {
-    uglify: Option<bool>,
+    pub uglify: Option<bool>,
 }
 
 pub fn get_config() -> Option<Config> {

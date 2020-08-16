@@ -33,9 +33,18 @@ pub fn print_data(
     file_to_write: Option<&str>,
     is_colored: bool,
 ) {
+    let fe_config = crate::config::get_config();
     let (string, tp) = match data_type {
         DataFormats::Json(data_src) => (
-            if is_ugly {
+            if is_ugly
+                || fe_config
+                    .and_then(|x| {
+                        x.json
+                            .and_then(|y| y.uglify)
+                            .or(x.global.and_then(|y| y.uglify))
+                    })
+                    .is_some()
+            {
                 serde_json::to_string(&data_src).unwrap()
             } else {
                 serde_json::to_string_pretty(&data_src).unwrap()
@@ -44,7 +53,15 @@ pub fn print_data(
         ),
         DataFormats::Yaml(data_src) => (serde_yaml::to_string(&data_src).unwrap(), "yaml"),
         DataFormats::Ron(data_src) => (
-            if is_ugly {
+            if is_ugly
+                || fe_config
+                    .and_then(|x| {
+                        x.ron
+                            .and_then(|y| y.uglify)
+                            .or(x.global.and_then(|y| y.uglify))
+                    })
+                    .is_some()
+            {
                 ron::to_string(&data_src).unwrap()
             } else {
                 ron::ser::to_string_pretty(&data_src, ron::ser::PrettyConfig::default()).unwrap()
@@ -52,7 +69,15 @@ pub fn print_data(
             "ron",
         ),
         DataFormats::Toml(data_src) => (
-            if is_ugly {
+            if is_ugly
+                || fe_config
+                    .and_then(|x| {
+                        x.toml
+                            .and_then(|y| y.uglify)
+                            .or(x.global.and_then(|y| y.uglify))
+                    })
+                    .is_some()
+            {
                 toml::to_string(&data_src).unwrap()
             } else {
                 toml::to_string_pretty(&data_src).unwrap()
