@@ -4,6 +4,9 @@ version = "0.1.16"
 authors = ["RustemB <bakirov.com@yandex.ru>"]
 edition = "2018"
 readme = "README.md"
+homepage = "https://github.com/RustemB/fe"
+repository = "https://github.com/RustemB/fe"
+license = "GPL-3.0"
 
 [dependencies]
 serde = "1.0.114"
