@@ -1,1 +1,6 @@
-# fe - data manipulator
+# fe
+![GitHub](https://img.shields.io/github/license/rustemb/fe)
+![GitHub top language](https://img.shields.io/github/languages/top/rustemb/fe)
+![GitHub search hit counter](https://img.shields.io/github/search/rustemb/fe/unsafe)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/rustemb/fe/Rust)
+![GitHub last commit](https://img.shields.io/github/last-commit/rustemb/fe)
