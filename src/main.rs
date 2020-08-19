@@ -1,5 +1,4 @@
 mod cli;
-mod config;
 mod data_types;
 use data_types::formats;
 use std::path;
