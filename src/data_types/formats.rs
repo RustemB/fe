@@ -1,3 +1,5 @@
+#[path = "../config.rs"] mod config;
+
 pub enum DataFormats {
     Json(serde_json::Value),
     Yaml(serde_yaml::Value),
@@ -33,7 +35,7 @@ pub fn print_data(
     file_to_write: Option<&str>,
     is_colored: bool,
 ) {
-    let fe_config = crate::config::get_config();
+    let fe_config = config::get_config();
     let (string, tp) = match data_type {
         DataFormats::Json(data_src) => (
             if is_ugly
