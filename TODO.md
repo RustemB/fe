@@ -2,7 +2,7 @@
 - [x] Easy way to add new formats
 - [x] remove `process::exit`s
 - [x] Detect data format by magic
-- [ ] Query of data
+- [ ] Query data
 - [ ] Convertation
 - [ ] data to QR-code
 - [ ] WebAssembly info
