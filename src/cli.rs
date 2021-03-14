@@ -49,6 +49,6 @@ pub fn gen_cli() -> ArgMatches<'static> {
                 .hide_default_value(true)
                 .possible_values(&["auto", "always", "never"]),
         )
-        //.arg(Arg::with_name("query").last(true).default_value("/"))
+        // .arg(Arg::with_name("query").last(true).default_value("/"))
         .get_matches()
 }

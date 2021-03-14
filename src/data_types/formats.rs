@@ -1,4 +1,5 @@
-#[path = "../config.rs"] mod config;
+#[path = "../config.rs"]
+mod config;
 
 pub enum DataFormats {
     Json(serde_json::Value),

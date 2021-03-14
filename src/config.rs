@@ -46,10 +46,7 @@ pub fn get_config() -> Option<Config> {
             let mut buf = String::new();
             let mut bufreader = BufReader::new(file);
             match bufreader.read_to_string(&mut buf) {
-                Ok(_) => match toml::from_str::<Config>(&buf) {
-                    Ok(val) => Some(val),
-                    _ => None,
-                },
+                Ok(_) => toml::from_str::<Config>(&buf).ok(),
                 _ => None,
             }
         } else {
